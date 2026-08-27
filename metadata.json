@@ -1,0 +1,10 @@
+{
+  "name": "Remix Bishkek Hotel",
+  "description": "Modern hotel booking platform and complete technical architecture specification with flexible 12h/24h check-in time calculation, multilingual support (KY/RU/EN), conflict-free room scheduling, AI concierge, and administrative portal.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #0F1115;
+    --bg-card: #14161C;
+    --bg-secondary: #1F222A;
+    --bg-elevated: #262A35;
+    --accent-gold: #C5A059;
+    --accent-gold-hover: #D8B46C;
+    --accent-gold-dark: #A6823B;
+    --text-primary: #E0E0E0;
+    --text-muted: #9CA3AF;
+    --border-subtle: #252936;
+    --border-gold: rgba(197, 160, 89, 0.25);
+  }
+
+  body {
+    background-color: #0F1115;
+    color: #E0E0E0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Custom gold shimmer and dark elegance utilities */
+.bg-dark-main {
+  background-color: #0F1115;
+}
+
+.bg-dark-card {
+  background-color: #14161C;
+}
+
+.bg-dark-secondary {
+  background-color: #1F222A;
+}
+
+.bg-dark-elevated {
+  background-color: #262A35;
+}
+
+.text-gold {
+  color: #C5A059;
+}
+
+.text-gold-light {
+  color: #D8B46C;
+}
+
+.border-dark-subtle {
+  border-color: #252936;
+}
+
+.border-gold-subtle {
+  border-color: rgba(197, 160, 89, 0.25);
+}
+
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #C5A059 0%, #E2BE78 50%, #B89248 100%);
+  color: #0F1115;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #D4AF67 0%, #ECC985 50%, #C5A059 100%);
+  box-shadow: 0 4px 20px rgba(197, 160, 89, 0.25);
+  transform: translateY(-1px);
+}
+
+.gold-outline-btn {
+  border: 1px solid #C5A059;
+  color: #C5A059;
+  background: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.gold-outline-btn:hover {
+  background: rgba(197, 160, 89, 0.1);
+  color: #E2BE78;
+  border-color: #E2BE78;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0F1115;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1F222A;
+  border-radius: 4px;
+  border: 1px solid #252936;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
