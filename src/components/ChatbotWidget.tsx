@@ -123,19 +123,19 @@ export const ChatbotWidget: React.FC = () => {
     if (q.includes('тамак') || q.includes('завтрак') || q.includes('breakfast') || q.includes('таңкы') || q.includes('food') || q.includes('тамактануу') || q.includes('питание')) {
       if (language === 'ky') {
         return {
-          text: `Эртең мененки тамак боюнча маалымат азырынча такталууда. Так маалымат алуу үчүн 24/7 ресепшнге кайрылыңыз: 0880 334 335 же 0503 334 335.`,
-          action: { type: 'call_hotel', label: 'Чалуу (0880 334 335)' },
+          text: `🍳 Эртең мененки тамак — Заказ боюнча даярдалат.\n"Эртең мененки тамакты алдын ала заказ кылсаңыз, сиз үчүн жаңы даярдап беребиз."\nБаасы: администратордон такталат. Брондоо учурунда тамак заказ кылуу опциясын тандап же 24/7 ресепшнге кайрылсаңыз болот: 0880 334 335, 0503 334 335.`,
+          action: { type: 'book_now', label: 'Брондоо формасына өтүү' },
         };
       }
       if (language === 'ru') {
         return {
-          text: `Информация по завтракам в настоящее время уточняется. Для получения точной информации, пожалуйста, обратитесь на ресепшн 24/7: 0880 334 335 или 0503 334 335.`,
-          action: { type: 'call_hotel', label: 'Позвонить (0880 334 335)' },
+          text: `🍳 Завтрак — Под заказ (Заказ боюнча даярдалат).\n"Если вы закажете завтрак заранее, мы приготовим его для вас свежим."\nСтоимость уточняется у администратора (0880 334 335 / 0503 334 335). Вы также можете заказать завтрак прямо в форме онлайн-бронирования.`,
+          action: { type: 'book_now', label: 'Забронировать номер' },
         };
       }
       return {
-        text: `Breakfast information is currently being confirmed. For accurate details, please contact the 24/7 front desk: 0880 334 335 or 0503 334 335.`,
-        action: { type: 'call_hotel', label: 'Call 0880 334 335' },
+        text: `🍳 Breakfast — Prepared on request.\n"If you pre-order breakfast, we will prepare it fresh for you."\nPrice is coordinated with the front desk (0880 334 335 / 0503 334 335). You can also add breakfast in the reservation wizard.`,
+        action: { type: 'book_now', label: 'Book with Breakfast' },
       };
     }
 

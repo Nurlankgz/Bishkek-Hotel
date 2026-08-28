@@ -100,7 +100,7 @@ export const AboutSection: React.FC = () => {
                 <div>
                   <h4 className="font-bold text-sm text-[#FAF8F5]">{t.featureKey4}</h4>
                   <p className="text-xs text-[#9CA3AF] mt-0.5">
-                    {language === 'ky' ? 'Маалымат такталууда' : language === 'ru' ? 'Информация уточняется' : 'Information to be confirmed'}
+                    {t.advBreakfastLongDesc}
                   </p>
                 </div>
               </div>

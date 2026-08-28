@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useHotel } from '../context/HotelContext';
-import { Star, MessageSquarePlus, CheckCircle2, UserCheck, X } from 'lucide-react';
+import { Star, MessageSquarePlus, CheckCircle2, X, MessageCircle } from 'lucide-react';
 
 export const ReviewsSection: React.FC = () => {
-  const { reviews, addReview, language, t } = useHotel();
+  const { addReview, language, t, settings } = useHotel();
   const [modalOpen, setModalOpen] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [guestLocation, setGuestLocation] = useState('');
   const [rating, setRating] = useState(5);
   const [commentText, setCommentText] = useState('');
   const [successNotice, setSuccessNotice] = useState(false);
-
-  const approvedReviews = reviews.filter((r) => r.status === 'approved');
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,86 +37,84 @@ export const ReviewsSection: React.FC = () => {
     }, 1500);
   };
 
+  const openWhatsAppFeedback = () => {
+    const text = encodeURIComponent(
+      language === 'ky'
+        ? 'Саламатсызбы! Мен Bishkek Hotel боюнча өз пикиримди калтырайын дедим эле.'
+        : language === 'ru'
+        ? 'Здравствуйте! Хочу оставить отзыв о проживании в отеле Bishkek Hotel.'
+        : 'Hello! I would like to leave feedback regarding my stay at Bishkek Hotel.'
+    );
+    window.open(`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=${text}`, '_blank');
+  };
+
   return (
     <section id="reviews" className="py-20 bg-[#0F1115] text-[#E0E0E0] relative border-b border-[#252936]">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 pb-6 border-b border-[#252936]">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5A059]/10 text-[#C5A059] text-xs font-semibold uppercase tracking-widest mb-2 border border-[#C5A059]/25 font-sans">
-              <Star className="w-3.5 h-3.5 text-[#C5A059] fill-[#C5A059]" />
-              <span>{t.reviewsTitle}</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#FAF8F5] tracking-tight font-display">
-              {t.reviewsTitle}
-            </h2>
-            <p className="text-sm text-[#9CA3AF] mt-1 font-sans">
-              {t.reviewsSubtitle}
-            </p>
-          </div>
-
-          <button
-            onClick={() => setModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl font-semibold gold-gradient-btn flex items-center gap-2 shadow self-start sm:self-auto text-xs active:scale-95 transition-all"
-          >
-            <MessageSquarePlus className="w-4 h-4" />
-            <span>{t.leaveReviewBtn}</span>
-          </button>
+      <div className="max-w-4xl mx-auto px-4 text-center">
+        {/* Section Tag */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5A059]/10 text-[#C5A059] text-xs font-semibold uppercase tracking-widest mb-3 border border-[#C5A059]/25 font-sans">
+          <Star className="w-3.5 h-3.5 text-[#C5A059] fill-[#C5A059]" />
+          <span>{t.reviewsTitle}</span>
         </div>
 
-        {/* Reviews Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {approvedReviews.map((rev) => (
-            <div
-              key={rev.id}
-              className="bg-[#14161C] border border-[#252936] rounded-2xl p-6 flex flex-col justify-between shadow-lg hover:border-[#C5A059]/30 transition-all"
+        {/* Section Heading */}
+        <h2 className="text-3xl sm:text-4xl font-bold text-[#FAF8F5] tracking-tight font-display mb-3">
+          {t.reviewsTitle}
+        </h2>
+
+        {/* Option B: Clean, honest announcement */}
+        <div className="bg-[#14161C] border border-[#252936] rounded-2xl p-8 sm:p-10 shadow-xl max-w-2xl mx-auto mt-6">
+          <div className="w-12 h-12 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/30 flex items-center justify-center mx-auto mb-4">
+            <Star className="w-6 h-6 fill-[#C5A059]" />
+          </div>
+
+          <h3 className="text-lg sm:text-xl font-bold text-[#FAF8F5] font-display mb-2">
+            {language === 'ky'
+              ? 'Биздин меймандардын пикири жакында жарыяланат'
+              : language === 'ru'
+              ? 'Отзывы наших гостей будут опубликованы в ближайшее время'
+              : 'Guest reviews will be published soon'}
+          </h3>
+
+          <p className="text-xs sm:text-sm text-[#9CA3AF] max-w-md mx-auto leading-relaxed mb-6 font-sans">
+            {language === 'ky'
+              ? 'Биз конокторубуздун чыныгы ой-пикирлерин баалайбыз. Отелдеги эс алууңуз боюнча пикириңизди калтырыңыз же WhatsApp аркылуу бөлүшүңүз.'
+              : language === 'ru'
+              ? 'Мы ценим искреннюю обратную связь. Вы можете оставить свой отзыв на сайте или написать нам в WhatsApp.'
+              : 'We value honest guest feedback. You are welcome to submit your review on our website or contact us via WhatsApp.'}
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              id="leave-review-btn"
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="px-5 py-2.5 rounded-xl font-bold gold-gradient-btn flex items-center gap-2 shadow text-xs active:scale-95 transition-all text-[#0F1115]"
             >
-              <div className="space-y-3">
-                {/* Rating stars */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < rev.rating
-                            ? 'text-[#C5A059] fill-[#C5A059]'
-                            : 'text-[#252936]'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[11px] text-[#9CA3AF] font-mono">{rev.date}</span>
-                </div>
+              <MessageSquarePlus className="w-4 h-4 text-[#0F1115]" />
+              <span>{t.leaveReviewBtn}</span>
+            </button>
 
-                {/* Comment Text */}
-                <p className="text-xs sm:text-sm text-[#E0E0E0] leading-relaxed italic font-sans">
-                  "{rev.comment[language] || rev.comment.ru || rev.comment.en}"
-                </p>
-              </div>
-
-              {/* Guest Profile */}
-              <div className="pt-4 mt-4 border-t border-[#252936] flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-sm text-[#FAF8F5] font-display">{rev.guestName}</h4>
-                  <p className="text-[11px] text-[#9CA3AF] font-sans">{rev.guestLocation}</p>
-                </div>
-                <span className="flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-[#1F222A] text-[#9CA3AF] border border-[#252936] font-medium font-sans">
-                  <UserCheck className="w-3 h-3 text-[#C5A059]" />
-                  <span>{language === 'ky' ? 'Демо пикир' : language === 'ru' ? 'Демо-отзыв' : 'Sample Review'}</span>
-                </span>
-              </div>
-            </div>
-          ))}
+            <button
+              id="whatsapp-review-btn"
+              type="button"
+              onClick={openWhatsAppFeedback}
+              className="px-5 py-2.5 rounded-xl font-semibold bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-800/50 flex items-center gap-2 shadow text-xs active:scale-95 transition-all"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <span>WhatsApp</span>
+            </button>
+          </div>
         </div>
 
         {/* Write Review Modal */}
         {modalOpen && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-[#14161C] border border-[#252936] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in zoom-in-95 duration-200 relative">
+            <div className="bg-[#14161C] border border-[#252936] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in zoom-in-95 duration-200 relative text-left">
               <button
                 onClick={() => setModalOpen(false)}
                 className="absolute top-4 right-4 text-[#9CA3AF] hover:text-[#FAF8F5] transition-colors"
+                aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -127,7 +123,11 @@ export const ReviewsSection: React.FC = () => {
                 {t.reviewModalTitle}
               </h3>
               <p className="text-xs text-[#9CA3AF] mb-4 font-sans">
-                {language === 'ky' ? 'Отел жөнүндө өз оюңуз менен бөлүшүңүз.' : language === 'ru' ? 'Поделитесь впечатлениями о проживании в отеле.' : 'Share your feedback with future guests.'}
+                {language === 'ky'
+                  ? 'Отел жөнүндө өз оюңуз менен бөлүшүңүз.'
+                  : language === 'ru'
+                  ? 'Поделитесь впечатлениями о проживании в отеле.'
+                  : 'Share your feedback with future guests.'}
               </p>
 
               {successNotice ? (
@@ -177,6 +177,7 @@ export const ReviewsSection: React.FC = () => {
                           type="button"
                           onClick={() => setRating(star)}
                           className="p-1 text-[#4B5563] hover:scale-110 transition-transform"
+                          aria-label={`Rate ${star} stars`}
                         >
                           <Star
                             className={`w-6 h-6 ${
@@ -199,7 +200,13 @@ export const ReviewsSection: React.FC = () => {
                       rows={3}
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      placeholder={language === 'ky' ? 'Бөлмө тазалыгы, тейлөө ж.б.' : language === 'ru' ? 'Чистота номера, удобство времени заезда...' : 'Cleanliness, comfort, check-in...'}
+                      placeholder={
+                        language === 'ky'
+                          ? 'Бөлмө тазалыгы, тейлөө ж.б.'
+                          : language === 'ru'
+                          ? 'Чистота номера, удобство времени заезда...'
+                          : 'Cleanliness, comfort, check-in...'
+                      }
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl p-3 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059] resize-none"
                     />
                   </div>
@@ -214,7 +221,7 @@ export const ReviewsSection: React.FC = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 rounded-xl text-xs font-semibold gold-gradient-btn shadow"
+                      className="px-5 py-2 rounded-xl text-xs font-semibold gold-gradient-btn shadow text-[#0F1115]"
                     >
                       {t.submitReviewBtn}
                     </button>

@@ -71,6 +71,7 @@ export const AdminPanel: React.FC = () => {
   const [manualDuration, setManualDuration] = useState<StayDuration>('12h');
   const [manualRoomId, setManualRoomId] = useState(rooms[0]?.id || 'room-1');
   const [manualBreakfast, setManualBreakfast] = useState(false);
+  const [manualBreakfastCount, setManualBreakfastCount] = useState<number>(1);
   const [manualNotes, setManualNotes] = useState('');
   const [manualError, setManualError] = useState<string | null>(null);
 
@@ -137,7 +138,8 @@ export const AdminPanel: React.FC = () => {
       checkInDateTime: startObj.toISOString(),
       duration: manualDuration,
       checkOutDateTime: endObj.toISOString(),
-      hasBreakfast: false,
+      hasBreakfast: manualBreakfast,
+      breakfastGuestCount: manualBreakfast ? manualBreakfastCount : undefined,
       totalPriceKGS: price,
       status: 'confirmed',
       notes: `[Manual Admin Entry] ${manualNotes.trim()}`,
@@ -147,6 +149,8 @@ export const AdminPanel: React.FC = () => {
     setShowManualBookingModal(false);
     setManualGuestName('');
     setManualGuestPhone('+996 ');
+    setManualBreakfast(false);
+    setManualBreakfastCount(1);
     setManualNotes('');
   };
 
@@ -456,6 +460,7 @@ export const AdminPanel: React.FC = () => {
                       <th className="p-4">{t.bookingColCheckIn}</th>
                       <th className="p-4">{t.bookingColCheckOut}</th>
                       <th className="p-4">{t.bookingColDuration}</th>
+                      <th className="p-4">{t.summaryBreakfast}</th>
                       <th className="p-4">{t.bookingColTotal}</th>
                       <th className="p-4">{t.bookingColStatus}</th>
                       <th className="p-4 text-right">Action</th>
@@ -464,7 +469,7 @@ export const AdminPanel: React.FC = () => {
                   <tbody className="divide-y divide-[#252936] text-[#E0E0E0]">
                     {filteredBookings.length === 0 ? (
                       <tr>
-                        <td colSpan={9} className="p-8 text-center text-[#6B7280]">
+                        <td colSpan={10} className="p-8 text-center text-[#6B7280]">
                           No bookings found.
                         </td>
                       </tr>
@@ -491,6 +496,15 @@ export const AdminPanel: React.FC = () => {
                             <span className="px-2 py-0.5 rounded bg-[#0F1115] border border-[#252936] text-[#9CA3AF] font-semibold">
                               {b.duration}
                             </span>
+                          </td>
+                          <td className="p-4">
+                            {b.hasBreakfast ? (
+                              <span className="px-2 py-1 rounded bg-[#C5A059]/15 border border-[#C5A059]/30 text-[#C5A059] text-[11px] font-semibold inline-flex items-center gap-1">
+                                🍳 {b.breakfastGuestCount || 1} {language === 'ky' ? 'адам' : language === 'ru' ? 'чел.' : 'guests'}
+                              </span>
+                            ) : (
+                              <span className="text-[#6B7280] text-[11px]">—</span>
+                            )}
                           </td>
                           <td className="p-4 font-bold font-mono text-[#C5A059]">
                             {b.totalPriceKGS.toLocaleString()} сом
@@ -759,6 +773,36 @@ export const AdminPanel: React.FC = () => {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                <div className="p-3 bg-[#0F1115] rounded-xl border border-[#252936] space-y-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={manualBreakfast}
+                      onChange={(e) => setManualBreakfast(e.target.checked)}
+                      className="rounded border-[#252936] text-[#C5A059] focus:ring-[#C5A059]"
+                    />
+                    <span className="text-[#FAF8F5] font-semibold">
+                      🍳 {language === 'ky' ? 'Эртең мененки тамак (Заказ боюнча)' : language === 'ru' ? 'Завтрак (Под заказ)' : 'Breakfast (On request)'}
+                    </span>
+                  </label>
+
+                  {manualBreakfast && (
+                    <div className="pl-6 flex items-center gap-3">
+                      <label className="text-[#9CA3AF]">
+                        {language === 'ky' ? 'Канча адамга?' : language === 'ru' ? 'Количество человек:' : 'Number of guests:'}
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={manualBreakfastCount}
+                        onChange={(e) => setManualBreakfastCount(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                        className="w-20 bg-[#14161C] border border-[#252936] rounded-lg px-2 py-1 text-[#FAF8F5] font-mono text-center focus:outline-none focus:border-[#C5A059]"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-2 pt-3">

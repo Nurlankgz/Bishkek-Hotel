@@ -43,6 +43,7 @@ export interface Booking {
   duration: StayDuration;
   checkOutDateTime: string; // ISO string calculated
   hasBreakfast: boolean;
+  breakfastGuestCount?: number;
   totalPriceKGS: number;
   status: 'confirmed' | 'checked_in' | 'completed' | 'cancelled';
   createdAt: string;

@@ -52,6 +52,7 @@ export const BookingWizard: React.FC = () => {
   const [duration, setDuration] = useState<StayDuration>('12h');
   const [selectedRoomId, setSelectedRoomId] = useState<string>('');
   const [hasBreakfast, setHasBreakfast] = useState<boolean>(false);
+  const [breakfastGuestCount, setBreakfastGuestCount] = useState<number>(1);
   const [guestName, setGuestName] = useState<string>('');
   const [guestPhone, setGuestPhone] = useState<string>('+996 ');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'mbank' | 'optima' | 'card'>('cash');
@@ -157,7 +158,8 @@ export const BookingWizard: React.FC = () => {
       checkInDateTime: checkInDateObj.toISOString(),
       duration: duration,
       checkOutDateTime: checkOutDateObj.toISOString(),
-      hasBreakfast: duration === '24h' ? hasBreakfast : false,
+      hasBreakfast: hasBreakfast,
+      breakfastGuestCount: hasBreakfast ? breakfastGuestCount : undefined,
       totalPriceKGS: priceInfo.totalPrice || 0,
       status: 'confirmed',
       notes: notes.trim(),
@@ -173,6 +175,8 @@ export const BookingWizard: React.FC = () => {
     setConfirmedBooking(null);
     setGuestName('');
     setGuestPhone('+996 ');
+    setHasBreakfast(false);
+    setBreakfastGuestCount(1);
     setNotes('');
     setSelectedRoomForBooking(null);
   };
@@ -183,9 +187,54 @@ export const BookingWizard: React.FC = () => {
 
   const handleWhatsAppContact = () => {
     if (!confirmedBooking) return;
-    const text = encodeURIComponent(
-      `Здравствуйте! Я забронировал номер №${confirmedBooking.roomNumber} в Bishkek Hotel.\nКод брони: ${confirmedBooking.referenceCode}\nГость: ${confirmedBooking.guestName}\nЗаезд: ${formatDateTime(new Date(confirmedBooking.checkInDateTime), 'ru')}\nВыезд: ${formatDateTime(new Date(confirmedBooking.checkOutDateTime), 'ru')}\nСумма: ${confirmedBooking.totalPriceKGS} сом`
-    );
+
+    const breakfastText = confirmedBooking.hasBreakfast
+      ? (language === 'ky'
+          ? `Ооба (${confirmedBooking.breakfastGuestCount || 1} адамга) - Заказ боюнча даярдалат`
+          : language === 'ru'
+          ? `Да (${confirmedBooking.breakfastGuestCount || 1} чел.) - Под заказ`
+          : `Yes (${confirmedBooking.breakfastGuestCount || 1} guests) - Prepared on request`)
+      : (language === 'ky' ? 'Жок' : language === 'ru' ? 'Нет' : 'No');
+
+    let text = '';
+    if (language === 'ky') {
+      text = encodeURIComponent(
+        `Саламатсызбы! Мен Bishkek Hotel отелинен №${confirmedBooking.roomNumber} бөлмөнү брондодум.\n` +
+        `Брондоо коду: ${confirmedBooking.referenceCode}\n` +
+        `Конок: ${confirmedBooking.guestName}\n` +
+        `Телефон: ${confirmedBooking.guestPhone}\n` +
+        `Келүү: ${formatDateTime(new Date(confirmedBooking.checkInDateTime), 'ky')}\n` +
+        `Чыгуу: ${formatDateTime(new Date(confirmedBooking.checkOutDateTime), 'ky')}\n` +
+        `Мөөнөтү: ${confirmedBooking.duration}\n` +
+        `Эртең мененки тамак: ${breakfastText}\n` +
+        `Суммасы: ${confirmedBooking.totalPriceKGS} сом`
+      );
+    } else if (language === 'en') {
+      text = encodeURIComponent(
+        `Hello! I booked Room №${confirmedBooking.roomNumber} at Bishkek Hotel.\n` +
+        `Booking Code: ${confirmedBooking.referenceCode}\n` +
+        `Guest: ${confirmedBooking.guestName}\n` +
+        `Phone: ${confirmedBooking.guestPhone}\n` +
+        `Check-in: ${formatDateTime(new Date(confirmedBooking.checkInDateTime), 'en')}\n` +
+        `Checkout: ${formatDateTime(new Date(confirmedBooking.checkOutDateTime), 'en')}\n` +
+        `Duration: ${confirmedBooking.duration}\n` +
+        `Breakfast: ${breakfastText}\n` +
+        `Total: ${confirmedBooking.totalPriceKGS} KGS`
+      );
+    } else {
+      text = encodeURIComponent(
+        `Здравствуйте! Я забронировал номер №${confirmedBooking.roomNumber} в Bishkek Hotel.\n` +
+        `Код брони: ${confirmedBooking.referenceCode}\n` +
+        `Гость: ${confirmedBooking.guestName}\n` +
+        `Телефон: ${confirmedBooking.guestPhone}\n` +
+        `Заезд: ${formatDateTime(new Date(confirmedBooking.checkInDateTime), 'ru')}\n` +
+        `Выезд: ${formatDateTime(new Date(confirmedBooking.checkOutDateTime), 'ru')}\n` +
+        `Длительность: ${confirmedBooking.duration}\n` +
+        `Завтрак: ${breakfastText}\n` +
+        `Сумма: ${confirmedBooking.totalPriceKGS} сом`
+      );
+    }
+
     window.open(`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=${text}`, '_blank');
   };
 
@@ -390,23 +439,6 @@ export const BookingWizard: React.FC = () => {
                 </span>
               </div>
 
-              {/* Breakfast Notice for 24h stays */}
-              {duration === '24h' && (
-                <div className="bg-[#0F1115] p-4 rounded-xl border border-[#252936] space-y-1.5">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#FAF8F5] uppercase tracking-wide">
-                    <Coffee className="w-4 h-4 text-[#C5A059]" />
-                    <span>{t.advBreakfastTitle}: <span className="text-[#C5A059]">{t.advBreakfastDesc}</span></span>
-                  </div>
-                  <p className="text-xs text-[#9CA3AF]">
-                    {language === 'ky' 
-                      ? 'Эртең мененки тамак боюнча маалымат азырынча такталууда. Бардык бөлмөлөргө 24 сааттык туруу баасы: 5 000 сом.' 
-                      : language === 'ru' 
-                      ? 'Информация о завтраке в настоящее время уточняется. Стоимость проживания на 24 часа для всех номеров: 5 000 сом.' 
-                      : 'Breakfast information is currently being confirmed. 24-hour rate for all rooms: 5,000 KGS.'}
-                  </p>
-                </div>
-              )}
-
               {/* Room Grid Selector with Live Overlap Detection */}
               <div>
                 <label className="block text-xs font-semibold text-[#FAF8F5] mb-3">
@@ -419,7 +451,7 @@ export const BookingWizard: React.FC = () => {
                     const rPrice = calculateStayPrice(
                       room,
                       duration,
-                      duration === '24h' ? hasBreakfast : false,
+                      false,
                       settings.defaultBreakfastPriceKGS,
                       settings.default24hBasePriceKGS
                     );
@@ -478,6 +510,120 @@ export const BookingWizard: React.FC = () => {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Breakfast Selection Section */}
+              <div className="bg-[#0F1115] p-5 rounded-2xl border border-[#252936] space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-bold text-[#FAF8F5] font-display">
+                      <Coffee className="w-4 h-4 text-[#C5A059]" />
+                      <span>{t.breakfastQuestion}</span>
+                    </div>
+                    <p className="text-xs text-[#9CA3AF] mt-1 font-sans">
+                      {t.advBreakfastLongDesc}
+                    </p>
+                    <p className="text-[11px] text-[#C5A059] font-medium mt-0.5 font-sans">
+                      {t.advBreakfastPriceNote}
+                    </p>
+                  </div>
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#1F222A] text-[#C5A059] border border-[#252936] font-semibold shrink-0">
+                    {t.advBreakfastDesc}
+                  </span>
+                </div>
+
+                {/* Breakfast Options Toggle */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setHasBreakfast(true)}
+                    className={`p-3.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                      hasBreakfast
+                        ? 'bg-[#C5A059]/15 border-[#C5A059] text-[#FAF8F5] shadow-md ring-1 ring-[#C5A059]'
+                        : 'bg-[#14161C] border-[#252936] text-[#9CA3AF] hover:border-[#333846]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${
+                        hasBreakfast ? 'border-[#C5A059] bg-[#C5A059] text-[#0F1115]' : 'border-[#9CA3AF]/40'
+                      }`}>
+                        {hasBreakfast && <CheckCircle2 className="w-4 h-4" />}
+                      </div>
+                      <span className="text-xs font-bold text-[#FAF8F5]">{t.breakfastOptionYes}</span>
+                    </div>
+                    <span className="text-[11px] text-[#C5A059] font-semibold">
+                      {language === 'ky' ? 'Заказ боюнча' : language === 'ru' ? 'Под заказ' : 'On request'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setHasBreakfast(false)}
+                    className={`p-3.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                      !hasBreakfast
+                        ? 'bg-[#1F222A] border-[#C5A059]/50 text-[#FAF8F5]'
+                        : 'bg-[#14161C] border-[#252936] text-[#9CA3AF] hover:border-[#333846]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${
+                        !hasBreakfast ? 'border-[#C5A059] bg-[#C5A059] text-[#0F1115]' : 'border-[#9CA3AF]/40'
+                      }`}>
+                        {!hasBreakfast && <CheckCircle2 className="w-4 h-4" />}
+                      </div>
+                      <span className="text-xs font-semibold text-[#E0E0E0]">{t.breakfastOptionNo}</span>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Additional Guest Count selector when Breakfast is requested */}
+                {hasBreakfast && (
+                  <div className="pt-3 border-t border-[#252936] flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div>
+                      <label className="block text-xs font-bold text-[#FAF8F5] mb-0.5">
+                        {t.breakfastPeopleQuestion}
+                      </label>
+                      <p className="text-[11px] text-[#9CA3AF]">
+                        {language === 'ky' 
+                          ? 'Эртең мененки тамак даярдала турган коноктордун саны' 
+                          : language === 'ru' 
+                          ? 'Количество персон для приготовления свежего завтрака' 
+                          : 'Number of guests for freshly prepared breakfast'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 self-start sm:self-auto bg-[#14161C] p-1.5 rounded-xl border border-[#252936]">
+                      <button
+                        type="button"
+                        onClick={() => setBreakfastGuestCount(Math.max(1, breakfastGuestCount - 1))}
+                        disabled={breakfastGuestCount <= 1}
+                        className="w-8 h-8 rounded-lg bg-[#1F222A] hover:bg-[#262A35] disabled:opacity-40 disabled:cursor-not-allowed text-[#FAF8F5] flex items-center justify-center font-bold text-sm transition-colors"
+                        aria-label="Decrease guests"
+                      >
+                        -
+                      </button>
+
+                      <div className="px-3 text-center">
+                        <span className="text-sm font-bold text-[#C5A059] font-mono">
+                          {breakfastGuestCount}
+                        </span>
+                        <span className="text-[10px] text-[#9CA3AF] block">
+                          {t.breakfastPersonSuffix}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setBreakfastGuestCount(Math.min(10, breakfastGuestCount + 1))}
+                        disabled={breakfastGuestCount >= 10}
+                        className="w-8 h-8 rounded-lg bg-[#1F222A] hover:bg-[#262A35] disabled:opacity-40 disabled:cursor-not-allowed text-[#FAF8F5] flex items-center justify-center font-bold text-sm transition-colors"
+                        aria-label="Increase guests"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Navigation Buttons */}
@@ -619,14 +765,21 @@ export const BookingWizard: React.FC = () => {
                     <span className="text-[#9CA3AF]">{t.summaryCheckOut}</span>{' '}
                     <strong className="text-[#C5A059] font-mono">{formatDateTime(checkOutDateObj, language)}</strong>
                   </div>
-                  {duration === '24h' && (
-                    <div className="col-span-2">
+                  <div className="col-span-2 space-y-1">
+                    <div>
                       <span className="text-[#9CA3AF]">{t.summaryBreakfast}</span>{' '}
-                      <strong className="text-[#C5A059]">
-                        {t.advBreakfastDesc}
+                      <strong className="text-[#FAF8F5]">
+                        {hasBreakfast
+                          ? `${t.breakfastStatusYes} (${breakfastGuestCount} ${t.breakfastPersonSuffix}) — ${t.advBreakfastDesc}`
+                          : t.breakfastStatusNo}
                       </strong>
                     </div>
-                  )}
+                    {hasBreakfast && (
+                      <p className="text-[11px] text-[#C5A059]">
+                        {t.advBreakfastPriceNote}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex justify-between items-center pt-2 border-t border-[#252936] text-sm">
@@ -725,14 +878,21 @@ export const BookingWizard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="border-t border-[#252936] pt-3 flex justify-between items-center">
+                <div className="border-t border-[#252936] pt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
                     <span className="text-xs text-[#9CA3AF] block">{t.summaryBreakfast}</span>
                     <span className="text-xs font-semibold text-[#C5A059]">
-                      {t.advBreakfastDesc}
+                      {confirmedBooking.hasBreakfast
+                        ? `🍳 ${t.breakfastStatusYes} (${confirmedBooking.breakfastGuestCount || 1} ${t.breakfastPersonSuffix}) — ${t.advBreakfastDesc}`
+                        : t.breakfastStatusNo}
                     </span>
+                    {confirmedBooking.hasBreakfast && (
+                      <span className="block text-[10px] text-[#9CA3AF] mt-0.5">
+                        {t.advBreakfastPriceNote}
+                      </span>
+                    )}
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <span className="text-xs text-[#9CA3AF] block">{t.summaryTotal}</span>
                     <span className="text-lg font-bold text-[#C5A059] font-mono">
                       {formatCurrency(confirmedBooking.totalPriceKGS, language)}

@@ -52,7 +52,7 @@ export const Hero: React.FC = () => {
       icon: Coffee,
       title: t.advBreakfastTitle,
       desc: t.advBreakfastDesc,
-      badge: language === 'ky' ? 'Такталууда' : language === 'ru' ? 'Уточняется' : 'TBD',
+      badge: language === 'ky' ? 'Заказ боюнча' : language === 'ru' ? 'Под заказ' : 'On request',
     },
     {
       icon: BedDouble,

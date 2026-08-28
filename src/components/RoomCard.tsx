@@ -88,7 +88,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({ room, onBookNow }) => {
                 {language === 'ky' ? 'Эртең мененки тамак:' : language === 'ru' ? 'Завтрак:' : 'Breakfast:'}
               </span>
               <span className="font-medium text-[#FAF8F5]">
-                {language === 'ky' ? 'Маалымат такталууда' : language === 'ru' ? 'Информация уточняется' : 'To be confirmed'}
+                {t.advBreakfastDesc}
               </span>
             </div>
           </div>
@@ -163,14 +163,22 @@ export const RoomCard: React.FC<RoomCardProps> = ({ room, onBookNow }) => {
                     {formatCurrency(room.price24hWithoutBreakfast, language)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs border-t border-[#252936] pt-2.5 bg-[#14161C] p-2 rounded-lg">
-                  <span className="text-[#D8B46C] font-medium flex items-center gap-1">
-                    <Coffee className="w-3.5 h-3.5 text-[#C5A059]" />
-                    {language === 'ky' ? 'Эртең мененки тамак:' : language === 'ru' ? 'Завтрак:' : 'Breakfast:'}
-                  </span>
-                  <span className="font-medium text-[#FAF8F5]">
-                    {language === 'ky' ? 'Маалымат такталууда' : language === 'ru' ? 'Информация уточняется' : 'To be confirmed'}
-                  </span>
+                <div className="space-y-1.5 border-t border-[#252936] pt-2.5 bg-[#14161C] p-3 rounded-lg">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#D8B46C] font-semibold flex items-center gap-1.5">
+                      <Coffee className="w-3.5 h-3.5 text-[#C5A059]" />
+                      {language === 'ky' ? '🍳 Эртең мененки тамак:' : language === 'ru' ? '🍳 Завтрак:' : '🍳 Breakfast:'}
+                    </span>
+                    <span className="font-semibold text-[#FAF8F5]">
+                      {t.advBreakfastDesc}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
+                    {t.advBreakfastLongDesc}
+                  </p>
+                  <p className="text-[10px] text-[#C5A059] font-medium pt-0.5">
+                    {t.advBreakfastPriceNote}
+                  </p>
                 </div>
               </div>
 
