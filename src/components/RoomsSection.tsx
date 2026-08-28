@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { Room } from '../types';
 import { RoomCard } from './RoomCard';
 import { BedDouble, Info } from 'lucide-react';
 
 export const RoomsSection: React.FC = () => {
-  const { rooms, language, t, setActiveTab, setSelectedRoomForBooking } = useHotel();
+  const { rooms, language, t, setSelectedRoomForBooking } = useHotel();
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
   const filteredRooms = rooms.filter((room) => {
@@ -18,11 +20,12 @@ export const RoomsSection: React.FC = () => {
 
   const handleBookNow = (room: Room) => {
     setSelectedRoomForBooking(room);
-    setActiveTab('booking');
+    navigate('/booking');
   };
 
   return (
     <section id="rooms" className="py-20 bg-[#0F1115] text-[#E0E0E0] relative border-b border-[#252936]">
+
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-[#252936]">
@@ -92,10 +95,10 @@ export const RoomsSection: React.FC = () => {
               <strong className="text-[#FAF8F5]">{language === 'ky' ? 'Тастыкталган баалар:' : language === 'ru' ? 'Подтвержденные тарифы:' : 'Confirmed Rates:'}</strong>{' '}
               <span className="text-[#9CA3AF]">
                 {language === 'ky' 
-                  ? '№1–2: 12с = 2 500 сом | №3–7: 12с = 2 800 сом | №8–11: 12с = Баасы такталууда | Бардык бөлмөлөр: 24с = 5 000 сом (🍳 Эртең мененки тамак: Заказ боюнча даярдалат).' 
+                  ? '№1–2: 12с = 2 500 сом | №3–7: 12с = 2 800 сом | №8–11: 12с = 2 800 сом | Бардык бөлмөлөр: 24с = 5 000 сом (🍳 Эртең мененки тамак: Заказ боюнча даярдалат).' 
                   : language === 'ru' 
-                  ? '№1–2: 12ч = 2 500 сом | №3–7: 12ч = 2 800 сом | №8–11: 12ч = Цена уточняется | Все номера: 24ч = 5 000 сом (🍳 Завтрак: Готовится под заказ).' 
-                  : 'Rooms 1–2: 12h = 2,500 KGS | Rooms 3–7: 12h = 2,800 KGS | Rooms 8–11: 12h = Price TBD | All rooms: 24h = 5,000 KGS (🍳 Breakfast: Prepared on request).'}
+                  ? '№1–2: 12ч = 2 500 сом | №3–7: 12ч = 2 800 сом | №8–11: 12ч = 2 800 сом | Все номера: 24ч = 5 000 сом (🍳 Завтрак: Готовится под заказ).' 
+                  : 'Rooms 1–2: 12h = 2,500 KGS | Rooms 3–7: 12h = 2,800 KGS | Rooms 8–11: 12h = 2,800 KGS | All rooms: 24h = 5,000 KGS (🍳 Breakfast: Prepared on request).'}
               </span>
             </span>
           </div>

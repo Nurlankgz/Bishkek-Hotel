@@ -136,7 +136,7 @@ export const ContactSection: React.FC = () => {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Иван / Азамат"
+                      placeholder={t.namePlaceholder}
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-4 py-2.5 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059]"
                     />
                   </div>
@@ -150,7 +150,7 @@ export const ContactSection: React.FC = () => {
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+996 700 123 456"
+                      placeholder={t.phonePlaceholder}
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-4 py-2.5 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059] font-mono"
                     />
                   </div>
@@ -165,7 +165,7 @@ export const ContactSection: React.FC = () => {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder={language === 'ky' ? 'Бөлмөлөр, баалар, тосуп алуу ж.б.' : language === 'ru' ? 'Интересующие даты, трансфер, спецпредложения...' : 'Dates, special requests, inquiries...'}
+                    placeholder={t.messagePlaceholder}
                     className="w-full bg-[#0F1115] border border-[#252936] rounded-xl p-3 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059] resize-none"
                   />
                 </div>

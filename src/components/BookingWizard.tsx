@@ -33,6 +33,7 @@ export const BookingWizard: React.FC = () => {
     rooms, 
     bookings, 
     addBooking, 
+    addBookingAsync,
     language, 
     t, 
     settings, 
@@ -44,6 +45,7 @@ export const BookingWizard: React.FC = () => {
 
   // Wizard Steps: 1 (Time & Duration) -> 2 (Room & Breakfast) -> 3 (Guest Info) -> 4 (Confirmation & Voucher)
   const [step, setStep] = useState<number>(1);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Form State
   const defaultDate = new Date().toISOString().split('T')[0];
@@ -109,6 +111,22 @@ export const BookingWizard: React.FC = () => {
       setFormError(t.errorFillFields);
       return;
     }
+
+    // If selected check-in date is today, verify time has not already passed
+    const now = new Date();
+    const todayFormatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    if (checkInDate === todayFormatted) {
+      const [hStr, mStr] = checkInTime.split(':');
+      const inH = parseInt(hStr, 10);
+      const inM = parseInt(mStr, 10);
+      const selectedDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), inH, inM);
+      // Grace period of 2 minutes
+      if (selectedDateTime.getTime() < now.getTime() - 2 * 60 * 1000) {
+        setFormError(t.timePastError);
+        return;
+      }
+    }
+
     setStep(2);
   };
 
@@ -129,7 +147,7 @@ export const BookingWizard: React.FC = () => {
     setStep(3);
   };
 
-  const handleNextStep3 = () => {
+  const handleNextStep3 = async () => {
     setFormError(null);
     if (!guestName.trim()) {
       setFormError(language === 'ky' ? 'Аты-жөнүңүздү жазыңыз' : language === 'ru' ? 'Укажите Ф.И.О. гостя' : 'Please enter guest name');
@@ -148,26 +166,39 @@ export const BookingWizard: React.FC = () => {
       return;
     }
 
-    // Create booking
-    const newBooking = addBooking({
-      referenceCode: generateReferenceCode(),
-      roomId: currentSelectedRoom.id,
-      roomNumber: currentSelectedRoom.roomNumber,
-      guestName: guestName.trim(),
-      guestPhone: guestPhone.trim(),
-      checkInDateTime: checkInDateObj.toISOString(),
-      duration: duration,
-      checkOutDateTime: checkOutDateObj.toISOString(),
-      hasBreakfast: hasBreakfast,
-      breakfastGuestCount: hasBreakfast ? breakfastGuestCount : undefined,
-      totalPriceKGS: priceInfo.totalPrice || 0,
-      status: 'confirmed',
-      notes: notes.trim(),
-      paymentMethod: paymentMethod,
-    });
+    setIsSubmitting(true);
+    try {
+      // Create booking in Supabase / State
+      const result = await addBookingAsync({
+        referenceCode: generateReferenceCode(),
+        roomId: currentSelectedRoom.id,
+        roomNumber: currentSelectedRoom.roomNumber,
+        guestName: guestName.trim(),
+        guestPhone: guestPhone.trim(),
+        checkInDateTime: checkInDateObj.toISOString(),
+        duration: duration,
+        checkOutDateTime: checkOutDateObj.toISOString(),
+        hasBreakfast: hasBreakfast,
+        breakfastGuestCount: hasBreakfast ? breakfastGuestCount : undefined,
+        totalPriceKGS: priceInfo.totalPrice || 0,
+        status: 'confirmed',
+        notes: notes.trim(),
+        paymentMethod: paymentMethod,
+      });
 
-    setConfirmedBooking(newBooking);
-    setStep(4);
+      if (result.success && result.booking) {
+        setConfirmedBooking(result.booking);
+        setStep(4);
+      } else {
+        setFormError(result.error || t.errorOverlapNotice);
+        setStep(2);
+      }
+    } catch (err) {
+      console.error('Booking submission error:', err);
+      setFormError(t.errorOverlapNotice);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleResetBooking = () => {
@@ -678,7 +709,7 @@ export const BookingWizard: React.FC = () => {
                     required
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    placeholder={language === 'ky' ? 'Мисалы: Азамат Исмаилов' : language === 'ru' ? 'Например: Иванов Иван' : 'e.g. John Smith'}
+                    placeholder={t.namePlaceholder}
                     className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-4 py-3 text-sm text-[#FAF8F5] focus:outline-none focus:border-[#C5A059]"
                   />
                 </div>
@@ -693,7 +724,7 @@ export const BookingWizard: React.FC = () => {
                     required
                     value={guestPhone}
                     onChange={(e) => setGuestPhone(e.target.value)}
-                    placeholder="+996 700 123 456"
+                    placeholder={t.phonePlaceholder}
                     className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-4 py-3 text-sm text-[#FAF8F5] focus:outline-none focus:border-[#C5A059] font-mono"
                   />
                 </div>
@@ -736,7 +767,7 @@ export const BookingWizard: React.FC = () => {
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder={language === 'ky' ? 'Тынч бөлмө, кечигип келүү ж.б.' : language === 'ru' ? 'Тихий номер, поздний заезд и т.д.' : 'Quiet room, late arrival notes...'}
+                  placeholder={t.specialRequestsPlaceholder}
                   className="w-full bg-[#0F1115] border border-[#252936] rounded-xl p-3 text-xs text-[#FAF8F5] focus:outline-none focus:border-[#C5A059] resize-none"
                 />
               </div>
@@ -804,10 +835,13 @@ export const BookingWizard: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNextStep3}
-                  className="px-7 py-3 rounded-xl font-bold gold-gradient-btn shadow-lg shadow-[#C5A059]/20 transition-all flex items-center gap-2 active:scale-95"
+                  disabled={isSubmitting}
+                  className={`px-7 py-3 rounded-xl font-bold gold-gradient-btn shadow-lg shadow-[#C5A059]/20 transition-all flex items-center gap-2 active:scale-95 ${
+                    isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
                 >
                   <ShieldCheck className="w-4 h-4 text-[#0F1115]" />
-                  <span>{t.confirmBookingBtn}</span>
+                  <span>{isSubmitting ? (language === 'ky' ? 'Жүктөлүүдө...' : language === 'ru' ? 'Оформление...' : 'Processing...') : t.confirmBookingBtn}</span>
                 </button>
               </div>
             </div>

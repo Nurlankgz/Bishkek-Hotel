@@ -1,24 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { Language } from '../types';
 import { 
   Building2, 
   Calendar, 
   Phone, 
-  ShieldCheck, 
-  FileCode2, 
   Globe, 
   Menu, 
   X, 
   MapPin, 
   Clock,
-  Sparkles,
   ChevronDown,
   Check
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { language, setLanguage, t, activeTab, setActiveTab, settings } = useHotel();
+  const { language, setLanguage, t, settings } = useHotel();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
@@ -42,15 +42,22 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { id: 'home', label: t.navHome },
-    { id: 'rooms', label: t.navRooms },
-    { id: 'booking', label: t.navBooking },
-    { id: 'about', label: t.navAbout },
-    { id: 'contact', label: t.navContact },
+    { path: '/', label: t.navHome },
+    { path: '/rooms', label: t.navRooms },
+    { path: '/booking', label: t.navBooking },
+    { path: '/about', label: t.navAbout },
+    { path: '/contact', label: t.navContact },
   ];
 
-  const handleNavClick = (id: string) => {
-    setActiveTab(id);
+  const isLinkActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
     setMobileMenuOpen(false);
   };
 
@@ -141,8 +148,8 @@ export const Navbar: React.FC = () => {
       {/* Main navigation bar */}
       <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
         {/* Brand Logo */}
-        <button
-          onClick={() => handleNavClick('home')}
+        <Link
+          to="/"
           className="flex items-center gap-3 text-left group"
         >
           <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-[#A6823B] via-[#C5A059] to-[#E2BE78] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
@@ -156,45 +163,48 @@ export const Navbar: React.FC = () => {
               {language === 'ky' ? '24/7 Мейманкана' : language === 'ru' ? 'Отель 24/7' : '24/7 Hotel'}
             </p>
           </div>
-        </button>
+        </Link>
 
-        {/* Desktop Nav Links - Only 5 clean items */}
+        {/* Desktop Nav Links - 5 clean separate section routes */}
         <nav className="hidden md:flex items-center gap-1.5">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => handleNavClick(link.id)}
-              className={`px-3.5 py-2 text-sm rounded-lg font-medium transition-all ${
-                activeTab === link.id
-                  ? 'bg-[#1F222A] text-[#C5A059] border border-[#C5A059]/30 shadow-xs'
-                  : 'text-[#9CA3AF] hover:text-[#FAF8F5] hover:bg-[#1F222A]/60'
-              }`}
-            >
-              {link.label}
-            </button>
-          ))}
+          {navLinks.map((link) => {
+            const active = isLinkActive(link.path);
+            return (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`px-3.5 py-2 text-sm rounded-lg font-medium transition-all ${
+                  active
+                    ? 'bg-[#1F222A] text-[#C5A059] border border-[#C5A059]/30 shadow-xs'
+                    : 'text-[#9CA3AF] hover:text-[#FAF8F5] hover:bg-[#1F222A]/60'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Quick Book CTA button */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={() => handleNavClick('booking')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold gold-gradient-btn shadow-md active:scale-95 transition-transform"
+          <Link
+            to="/booking"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold gold-gradient-btn shadow-md active:scale-95 transition-transform text-[#0F1115]"
           >
             <Calendar className="w-4 h-4 text-[#0F1115]" />
             <span>{t.bookNowBtn}</span>
-          </button>
+          </Link>
         </div>
 
         {/* Mobile menu toggle button */}
         <div className="flex items-center gap-2 md:hidden">
-          <button
-            onClick={() => handleNavClick('booking')}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold gold-gradient-btn flex items-center gap-1"
+          <Link
+            to="/booking"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold gold-gradient-btn flex items-center gap-1 text-[#0F1115]"
           >
-            <Calendar className="w-3.5 h-3.5" />
+            <Calendar className="w-3.5 h-3.5 text-[#0F1115]" />
             <span>{t.navBooking}</span>
-          </button>
+          </Link>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -210,19 +220,22 @@ export const Navbar: React.FC = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#14161C] border-b border-[#252936] px-4 py-4 space-y-3">
           <div className="grid grid-cols-1 gap-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`text-left px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === link.id
-                    ? 'bg-[#C5A059] text-[#0F1115] font-bold'
-                    : 'text-[#9CA3AF] hover:bg-[#1F222A] hover:text-[#E0E0E0]'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+            {navLinks.map((link) => {
+              const active = isLinkActive(link.path);
+              return (
+                <button
+                  key={link.path}
+                  onClick={() => handleNavClick(link.path)}
+                  className={`text-left px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    active
+                      ? 'bg-[#C5A059] text-[#0F1115] font-bold'
+                      : 'text-[#9CA3AF] hover:bg-[#1F222A] hover:text-[#E0E0E0]'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="pt-2 border-t border-[#252936] flex items-center justify-between text-xs text-[#9CA3AF]">
@@ -256,3 +269,4 @@ export const Navbar: React.FC = () => {
     </header>
   );
 };
+

@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { Building2, MapPin, Phone, MessageSquare, Clock } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { language, t, settings, setActiveTab } = useHotel();
+  const { language, t, settings } = useHotel();
 
   return (
     <footer className="bg-[#0B0C0E] text-[#9CA3AF] border-t border-[#252936] text-xs">
@@ -11,12 +12,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Col 1: Brand Info */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#C5A059] to-[#DFB972] flex items-center justify-center text-[#0F1115] font-bold">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#C5A059] to-[#DFB972] flex items-center justify-center text-[#0F1115] font-bold group-hover:scale-105 transition-transform">
                 <Building2 className="w-5 h-5" />
               </div>
               <span className="text-base font-bold text-[#FAF8F5] tracking-tight font-display">Bishkek Hotel</span>
-            </div>
+            </Link>
             <p className="text-[#9CA3AF] leading-relaxed font-sans">
               {language === 'ky' 
                 ? 'Бишкек шаарындагы заманбап мейманкана. 12 жана 24 сааттык ийкемдүү эсептөө.' 
@@ -36,29 +37,29 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 font-sans">
               <li>
-                <button onClick={() => setActiveTab('home')} className="hover:text-[#C5A059] transition-colors">
+                <Link to="/" className="hover:text-[#C5A059] transition-colors">
                   {t.navHome}
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => setActiveTab('rooms')} className="hover:text-[#C5A059] transition-colors">
+                <Link to="/rooms" className="hover:text-[#C5A059] transition-colors">
                   {t.navRooms}
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => setActiveTab('booking')} className="hover:text-[#C5A059] transition-colors">
+                <Link to="/booking" className="hover:text-[#C5A059] transition-colors">
                   {t.navBooking}
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => setActiveTab('about')} className="hover:text-[#C5A059] transition-colors">
+                <Link to="/about" className="hover:text-[#C5A059] transition-colors">
                   {t.navAbout}
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => setActiveTab('contact')} className="hover:text-[#C5A059] transition-colors">
+                <Link to="/contact" className="hover:text-[#C5A059] transition-colors">
                   {t.navContact}
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -134,3 +135,4 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
+

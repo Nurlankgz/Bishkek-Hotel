@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHotel } from '../context/HotelContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   FileCode2, 
   Database, 
@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 export const SpecDocViewer: React.FC = () => {
-  const { setActiveTab } = useHotel();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<'all' | 'spec' | 'confirmation' | 'sql' | 'lovable'>('all');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -159,14 +159,14 @@ BUSINESS RULES:
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveTab('admin')}
+              onClick={() => navigate('/admin')}
               className="px-4 py-2 rounded-xl text-xs font-semibold gold-gradient-btn transition-all shadow flex items-center gap-1.5 font-sans"
             >
               <ShieldCheck className="w-4 h-4 text-[#0F1115]" />
               <span>Open Admin Panel</span>
             </button>
             <button
-              onClick={() => setActiveTab('home')}
+              onClick={() => navigate('/')}
               className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#1F222A] hover:bg-[#252936] text-[#FAF8F5] border border-[#252936] transition-colors font-sans"
             >
               Back to Website

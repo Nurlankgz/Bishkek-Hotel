@@ -148,7 +148,7 @@ export const ReviewsSection: React.FC = () => {
                       required
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
-                      placeholder="Иван / Азамат"
+                      placeholder={t.namePlaceholder}
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-3.5 py-2.5 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059]"
                     />
                   </div>
@@ -161,7 +161,7 @@ export const ReviewsSection: React.FC = () => {
                       type="text"
                       value={guestLocation}
                       onChange={(e) => setGuestLocation(e.target.value)}
-                      placeholder="Бишкек / Алматы / London"
+                      placeholder={t.locationPlaceholder}
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl px-3.5 py-2.5 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059]"
                     />
                   </div>
@@ -200,13 +200,7 @@ export const ReviewsSection: React.FC = () => {
                       rows={3}
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      placeholder={
-                        language === 'ky'
-                          ? 'Бөлмө тазалыгы, тейлөө ж.б.'
-                          : language === 'ru'
-                          ? 'Чистота номера, удобство времени заезда...'
-                          : 'Cleanliness, comfort, check-in...'
-                      }
+                      placeholder={t.reviewCommentPlaceholder}
                       className="w-full bg-[#0F1115] border border-[#252936] rounded-xl p-3 text-xs text-[#FAF8F5] placeholder-[#6B7280] focus:outline-none focus:border-[#C5A059] resize-none"
                     />
                   </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { Room, Booking, StayDuration } from '../types';
 import { 
@@ -34,6 +35,7 @@ import {
 } from 'lucide-react';
 
 export const AdminPanel: React.FC = () => {
+  const navigate = useNavigate();
   const { 
     rooms, 
     updateRoom, 
@@ -49,8 +51,7 @@ export const AdminPanel: React.FC = () => {
     updateSettings, 
     language, 
     t, 
-    resetToDefaults,
-    setActiveTab
+    resetToDefaults
   } = useHotel();
 
   const [activeAdminTab, setActiveAdminTab] = useState<'rooms' | 'bookings' | 'reviews' | 'gallery' | 'settings'>('rooms');
@@ -198,7 +199,7 @@ export const AdminPanel: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveTab('home')}
+              onClick={() => navigate('/')}
               className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#1F222A] hover:bg-[#252936] text-[#FAF8F5] border border-[#252936] flex items-center gap-1.5 transition-colors font-sans"
             >
               <Eye className="w-3.5 h-3.5 text-[#C5A059]" />

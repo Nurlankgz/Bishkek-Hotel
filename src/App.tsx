@@ -4,72 +4,46 @@
  */
 
 import React from 'react';
-import { HotelProvider, useHotel } from './context/HotelContext';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HotelProvider } from './context/HotelContext';
+import { ScrollToTop } from './components/ScrollToTop';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { StayLogicBanner } from './components/StayLogicBanner';
-import { RoomsSection } from './components/RoomsSection';
-import { BookingWizard } from './components/BookingWizard';
-import { AboutSection } from './components/AboutSection';
-import { ReviewsSection } from './components/ReviewsSection';
-import { LocationSection } from './components/LocationSection';
-import { ContactSection } from './components/ContactSection';
-import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { ChatbotWidget } from './components/ChatbotWidget';
-import { AdminPanel } from './components/AdminPanel';
-import { SpecDocViewer } from './components/SpecDocViewer';
 import { MobileActionBar } from './components/MobileActionBar';
 
-const HotelAppContent: React.FC = () => {
-  const { activeTab } = useHotel();
-
-  if (activeTab === 'admin') {
-    return (
-      <div className="min-h-screen bg-[#0F1115] text-[#E0E0E0] selection:bg-[#C5A059] selection:text-[#0F1115] pb-16 md:pb-0">
-        <Navbar />
-        <AdminPanel />
-        <ChatbotWidget />
-        <MobileActionBar />
-      </div>
-    );
-  }
-
-  if (activeTab === 'spec') {
-    return (
-      <div className="min-h-screen bg-[#0F1115] text-[#E0E0E0] selection:bg-[#C5A059] selection:text-[#0F1115] pb-16 md:pb-0">
-        <Navbar />
-        <SpecDocViewer />
-        <ChatbotWidget />
-        <MobileActionBar />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#0F1115] text-[#E0E0E0] selection:bg-[#C5A059] selection:text-[#0F1115] pb-16 md:pb-0">
-      <Navbar />
-      <Hero />
-      <StayLogicBanner />
-      <RoomsSection />
-      <BookingWizard />
-      <AboutSection />
-      <ReviewsSection />
-      <LocationSection />
-      <ContactSection />
-      <FAQSection />
-      <Footer />
-      <ChatbotWidget />
-      <MobileActionBar />
-    </div>
-  );
-};
+import { HomePage } from './pages/HomePage';
+import { RoomsPage } from './pages/RoomsPage';
+import { BookingPage } from './pages/BookingPage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
+import { AdminPage } from './pages/AdminPage';
+import { SpecPage } from './pages/SpecPage';
 
 export default function App() {
   return (
-    <HotelProvider>
-      <HotelAppContent />
-    </HotelProvider>
+    <BrowserRouter>
+      <HotelProvider>
+        <ScrollToTop />
+        <div className="min-h-screen bg-[#0F1115] text-[#E0E0E0] selection:bg-[#C5A059] selection:text-[#0F1115] flex flex-col pb-24 md:pb-0">
+          <Navbar />
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/rooms" element={<RoomsPage />} />
+              <Route path="/booking" element={<BookingPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/spec" element={<SpecPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+          <Footer />
+          <ChatbotWidget />
+          <MobileActionBar />
+        </div>
+      </HotelProvider>
+    </BrowserRouter>
   );
 }
-

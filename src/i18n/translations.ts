@@ -127,6 +127,14 @@ export const translations = {
     newBookingBtn: 'Жаңы брондоо жасоо',
     errorOverlapNotice: 'Бул бөлмө көрсөтүлгөн аралыкта башка конок тарабынан ээленген! Сураныч, башка бөлмөнү тандаңыз.',
     errorFillFields: 'Сураныч, бардык талааларды туура толтуруңуз.',
+    timePastError: 'Тандалган келүү убактысы өтүп кетти. Сураныч, учурдагы же алдыдагы убакытты тандаңыз.',
+    namePlaceholder: 'Мисалы: Азамат Исмаилов',
+    phonePlaceholder: '+996 700 123 456',
+    locationPlaceholder: 'Бишкек / Ош / Алматы',
+    messagePlaceholder: 'Бөлмөлөр, баалар, тосуп алуу же суроолоруңуз...',
+    specialRequestsPlaceholder: 'Тынч бөлмө, кечигип келүү, кошумча жаздык ж.б.',
+    reviewCommentPlaceholder: 'Бөлмөнүн тазалыгы, кызматкерлердин тейлөөсү жана таасириңиз...',
+    searchPlaceholder: 'Издөө...',
 
     // About Section
     aboutTitle: 'Bishkek Hotel жөнүндө',
@@ -368,6 +376,14 @@ export const translations = {
     newBookingBtn: 'Забронировать еще номер',
     errorOverlapNotice: 'Внимание: этот номер уже занят на указанный промежуток времени! Пожалуйста, выберите другой свободный номер.',
     errorFillFields: 'Пожалуйста, заполните все обязательные поля корректно.',
+    timePastError: 'Выбранное время заезда уже прошло. Пожалуйста, укажите актуальное время.',
+    namePlaceholder: 'Например: Иванов Иван',
+    phonePlaceholder: '+996 700 123 456',
+    locationPlaceholder: 'Бишкек / Алматы / Москва / London',
+    messagePlaceholder: 'Интересующие даты, спецпредложения, трансфер...',
+    specialRequestsPlaceholder: 'Тихий номер, поздний заезд, дополнительная подушка и т.д.',
+    reviewCommentPlaceholder: 'Чистота номера, качество обслуживания, впечатления...',
+    searchPlaceholder: 'Поиск...',
 
     // About Section
     aboutTitle: 'Об отеле Bishkek Hotel',
@@ -609,6 +625,14 @@ export const translations = {
     newBookingBtn: 'Make Another Booking',
     errorOverlapNotice: 'Conflict detected: This room is already reserved for the selected time span. Please select another available room.',
     errorFillFields: 'Please complete all required fields properly.',
+    timePastError: 'Selected check-in time has already passed. Please select a current or upcoming time.',
+    namePlaceholder: 'e.g. John Smith',
+    phonePlaceholder: '+996 700 123 456',
+    locationPlaceholder: 'Bishkek / Almaty / London / New York',
+    messagePlaceholder: 'Dates, inquiries, special requests...',
+    specialRequestsPlaceholder: 'Quiet room, late arrival notes, extra pillow etc.',
+    reviewCommentPlaceholder: 'Room cleanliness, service quality, your impressions...',
+    searchPlaceholder: 'Search...',
 
     // About Section
     aboutTitle: 'About Bishkek Hotel',

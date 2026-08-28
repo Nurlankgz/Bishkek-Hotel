@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { ChatMessage } from '../types';
 import { 
@@ -17,11 +18,13 @@ import {
 } from 'lucide-react';
 
 export const ChatbotWidget: React.FC = () => {
-  const { language, t, settings, setActiveTab, rooms } = useHotel();
+  const { language, t, settings, rooms } = useHotel();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
 
   const getGreeting = (): string => {
     if (language === 'ky') {
@@ -250,10 +253,10 @@ export const ChatbotWidget: React.FC = () => {
   const handleActionClick = (action: ChatMessage['action']) => {
     if (!action) return;
     if (action.type === 'book_now') {
-      setActiveTab('booking');
+      navigate('/booking');
       setIsOpen(false);
     } else if (action.type === 'view_rooms') {
-      setActiveTab('rooms');
+      navigate('/rooms');
       setIsOpen(false);
     } else if (action.type === 'open_map') {
       window.open(settings.googleMapsUrl, '_blank');

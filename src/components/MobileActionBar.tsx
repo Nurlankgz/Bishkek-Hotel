@@ -1,16 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { Phone, MessageCircle, Calendar } from 'lucide-react';
 
 export const MobileActionBar: React.FC = () => {
-  const { language, setActiveTab, settings } = useHotel();
+  const { language, settings } = useHotel();
+  const navigate = useNavigate();
 
   const handleBookClick = () => {
-    setActiveTab('booking');
-    const el = document.getElementById('booking');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/booking');
   };
 
   const primaryPhone = settings.phones[0] ? settings.phones[0].replace(/\s/g, '') : '0880334335';
@@ -59,3 +57,4 @@ export const MobileActionBar: React.FC = () => {
     </div>
   );
 };
+

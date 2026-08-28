@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '../context/HotelContext';
 import { StayDuration } from '../types';
 import { calculateCheckOutDateTime, combineDateAndTime, formatDateTime } from '../utils/bookingLogic';
@@ -15,7 +16,8 @@ import {
 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
-  const { language, t, setActiveTab, settings, setQuickBookingParams } = useHotel();
+  const { language, t, setQuickBookingParams } = useHotel();
+  const navigate = useNavigate();
 
   // Quick check widget state
   const todayStr = new Date().toISOString().split('T')[0];
@@ -32,7 +34,7 @@ export const Hero: React.FC = () => {
       time: quickTime,
       duration: quickDuration,
     });
-    setActiveTab('booking');
+    navigate('/booking');
   };
 
   const advantages = [
@@ -107,15 +109,15 @@ export const Hero: React.FC = () => {
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
-                onClick={() => setActiveTab('booking')}
-                className="px-6 py-3.5 rounded-xl font-bold gold-gradient-btn shadow-lg shadow-[#C5A059]/20 active:scale-95 transition-all flex items-center gap-2"
+                onClick={() => navigate('/booking')}
+                className="px-6 py-3.5 rounded-xl font-bold gold-gradient-btn shadow-lg shadow-[#C5A059]/20 active:scale-95 transition-all flex items-center gap-2 text-[#0F1115]"
               >
                 <span>{t.heroPrimaryCta}</span>
                 <ArrowRight className="w-4 h-4 text-[#0F1115]" />
               </button>
 
               <button
-                onClick={() => setActiveTab('rooms')}
+                onClick={() => navigate('/rooms')}
                 className="px-6 py-3.5 rounded-xl font-semibold bg-[#1F222A] hover:bg-[#262A35] text-[#E0E0E0] border border-[#252936] active:scale-95 transition-all"
               >
                 {t.heroSecondaryCta}
@@ -222,7 +224,7 @@ export const Hero: React.FC = () => {
 
               <button
                 onClick={handleStartBooking}
-                className="w-full py-3.5 rounded-xl font-bold gold-gradient-btn shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl font-bold gold-gradient-btn shadow-md transition-all flex items-center justify-center gap-2 text-[#0F1115]"
               >
                 <span>{language === 'ky' ? 'Бул убакытка бөлмө издөө' : language === 'ru' ? 'Найти свободные номера' : 'Find Available Rooms'}</span>
                 <ArrowRight className="w-4 h-4 text-[#0F1115]" />
@@ -269,3 +271,4 @@ export const Hero: React.FC = () => {
     </section>
   );
 };
+
